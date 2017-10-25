@@ -1,0 +1,111 @@
+获取txt文本里的内容
+先在Assets下创建一个Table文件夹，然后把一个txt文本拖进文件夹（txt文本里存的是文档信息）
+Public TextAsset text;//将txt实例化出来的一个类型，然后把txt拖进去
+string str=text.text;//获取到txt里面的内容
+string [] strs=str.Split(',');//将字符串用“，”分割开（注意：要用单引号）
+先要引用命名空间using System.IO;
+所有文件的读取都要将字节流转换成其他类型，而写入要将其他类型数组转皇城字节流
+
+1
+string str="aa";
+2
+byte[]buffer=System.Text.Encoding.UTF8.GetBytes(str);//将字符串转换成为字节流
+3
+FileStream fs=new FileStream(@"D:\MyIOTest\LXM\lxm.txt",FileMode.Append);//第二个参数的意思是内容的叠加
+4
+fs.Write(buffer,0,buffer.Length);/将字节流写入文件
+C#文件操作：
+Directory类：对文件夹的操作。
+File ： 对文件的操作
+FileStream ：流式处理。字节流
+
+
+
+操作系统中存储的最小单位是：位
+标准单位是字节，我们说这个文件有多大，是根据多少字节来判断的。
+
+
+
+对于文件的路径，在string中，如果我们想要使用斜杠’/’ 在C#中一个反斜杠代表转义字符，所以\\
+后来\\觉得太麻烦，于是就发明了@“文件路径” 在@中就可以使用一个反斜杠来表达文件路径的关系。
+
+
+
+Directory.CreateDirectory  指定路径创建文件夹
+File.Create(@"D:\MyIOTest\LXM\lxm.txt");  指定路径创建文件
+File.Delete(@"D:\MyIOTest\LXM\lxm.txt"); 指定路径删除文件
+
+
+
+养成好习惯，在创建和删除的之前先判断一下有没有这个文件
+bool exists=File.Exists(@"D:\MyIOTest\LXM\lxm.txt")//查看lxm.txt是否存在
+File.Open(@"D:\MyIOTest\LXM\lxm.txt", FileMode.Open) File类对于文件的打开操作，我们可以这样的打开方式来获取到指定路径下的文件流。
+示例：
+
+1
+FileStream fs=File.Create(@"D：\MyIOTest\lxm.txt");
+2
+string str="hello";
+3
+byte[]buffer=System.Text.Encoding.UTF8.GetBytes(str);//将字符串转化成字节流的形式才可以写入
+4
+fs.write(buffer,0,buffer.Length);//将buffer第0个元素开始，写入buffer长度个字节
+5
+fs.close();//关闭字节流，否则浪费内存，而且别的用户不能修改
+如果想读取文件的内容，需要先打开文件
+
+1
+byte[]buffer=new byte[1024*1024];//创建一个缓存区来存储数据（就是创建一个数组）
+2
+FileStream fs=File.Open(@"D：\MyIOTest\lxm.txt",FileMode.Open);//后面是要进行的方法
+3
+int leng=fs.Read(buffer,0,fs.Length);
+4
+String str=System.Text.Encoding.UTF8.GetString(buffer,0,buffer.Length);//将字节流转换成字符串才可以读取,str就读取结果
+5
+File.Write()//文件的写入
+File.Read()//文件的读取
+File.ReadAllText(@"D：\MyIOTest\lxm.txt") : string//读取完lxm里的内容会自动关闭流
+File.ReadAllLines() : string[]//和上面的方法一样，只不过读取出来的结果是字符串数组，所以可以单独读取某一行
+File.ReadAllBytes() : byte[]
+FileStream.Read()
+文件的加密：
+先获取文件内容然后删除倒序原来的内容，最后写入文件
+一个流来读，一个流来写
+
+1
+byte[]buffer=new byte[1024*1024];//创建一个缓存区来存储数据（就是创建一个数组）
+2
+FileStream fs=new FileStream(@"D：\MyIOTest\lxm.txt",FileMode.Open);//创建一个FileStream的变量
+3
+int leng=fs.Read(buffer,0,fs.Length);//读取文件内容并获取到内容的长度
+4
+byte[]_buffer=new byte[leng];//新定义一个字符流，长度等于内容的长度
+5
+Array.Copy(buffer,_buffer,leng);//将字节流buffer的内容拷贝到字节流_buffer里，长度是buffer的长度
+6
+_buffer.Reverse();//将_buffer的内容倒序
+7
+(
+8
+byte[] buf=new byte[leng];
+9
+for(int i=0;i<i.Length;i++)
+10
+{
+11
+buf[i]=_buffer[length-1-i];
+12
+}
+13
+   )//小括号里的是手动将_buffer的内容倒序
+14
+15
+fs.Close();//关闭字节流
+16
+FileStream ws=new FileStream(@"D：\MyIOTest\lxm.txt",FileMode.Create);//新建一个FileStream的变量，模式是创建
+17
+ws.Write(_buffer,0,_buffer.Length);//然后将_buffer的内容写到lxm这个文本里
+18
+ws.Close();
+解码：将上面的程序在运行一次就进行解码
